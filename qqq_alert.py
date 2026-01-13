@@ -27,20 +27,28 @@ def get_market_info():
     ma200 = close.rolling(200).mean().iloc[-1]
 
     structure = []
+    structure_emoji = []
+
     if current > ma50:
         structure.append("50일선 상방")
+        structure_emoji.append("🟢")
     else:
         structure.append("50일선 하방")
+        structure_emoji.append("🔴")
 
     if current > ma200:
         structure.append("200일선 상방")
+        structure_emoji.append("🟢")
     else:
         structure.append("200일선 하방")
+        structure_emoji.append("🔴")
 
     if ma50 > ma200:
         structure.append("중기 > 장기 (상승 구조)")
+        structure_emoji.append("📈")
     else:
         structure.append("중기 < 장기 (하락 구조)")
+        structure_emoji.append("📉")
 
     return {
         "current": current,
@@ -50,7 +58,8 @@ def get_market_info():
         "rebound_low": rebound_low,
         "ma50": ma50,
         "ma200": ma200,
-        "structure": structure
+        "structure": structure,
+        "structure_emoji": structure_emoji
     }
 
 def send_discord(msg):
@@ -60,22 +69,24 @@ def main():
     data = get_market_info()
 
     message = (
-        f"📊 QQQ 시장 구조 체크\n\n"
-        f"1️⃣ 고점 대비 변화\n"
+        "──────────────────────────────\n"
+        f"📊 **QQQ 시장 구조 체크**\n"
+        f"⏰ **{datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}**\n\n"
+        f"1️⃣ **고점 대비 변화**\n"
         f"- 3개월 고점: {data['high_3m']:.2f}\n"
         f"- 현재가: {data['current']:.2f}\n"
         f"- 고점 대비: {data['dd_high']:.2f}%\n\n"
-        f"2️⃣ 저점 대비 변화\n"
+        f"2️⃣ **저점 대비 변화**\n"
         f"- 3개월 저점: {data['low_3m']:.2f}\n"
         f"- 저점 대비: +{data['rebound_low']:.2f}%\n\n"
-        f"3️⃣ 시장 구조 (추세)\n"
-        f"- 50일선: {data['ma50']:.2f}\n"
-        f"- 200일선: {data['ma200']:.2f}\n"
-        f"- 구조: {', '.join(data['structure'])}\n\n"
-        f"🧠 해석 가이드\n"
+        f"3️⃣ **시장 구조 (추세)**\n"
+        f"{data['structure_emoji'][0]} {data['structure'][0]}\n"
+        f"{data['structure_emoji'][1]} {data['structure'][1]}\n"
+        f"{data['structure_emoji'][2]} {data['structure'][2]}\n\n"
+        f"🧠 **해석 가이드**\n"
         f"- QLD는 50·200일선 하방 시 비중 조절\n"
-        f"- 고점 대비 -15% 이하 + 구조 회복 시 유리\n\n"
-        f"⏰ {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}"
+        f"- 고점 대비 -15% 이하 + 구조 회복 시 유리\n"
+        "──────────────────────────────"
     )
 
     send_discord(message)
