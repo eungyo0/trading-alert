@@ -2,7 +2,7 @@ name: QQQ Market Alert
 
 on:
   schedule:
-    - cron: "9 9 * * *"     # 한국 18:00
+    - cron: "0 9 * * *"     # 한국 18:00
     - cron: "30 11 * * *"   # 한국 20:30
   workflow_dispatch:
 
