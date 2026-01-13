@@ -2,7 +2,8 @@ name: QQQ Market Alert
 
 on:
   schedule:
-    - cron: "*/30 * * * *"   # 30분마다 실행
+    - cron: "9 9 * * *"     # 한국 18:00
+    - cron: "30 11 * * *"   # 한국 20:30
   workflow_dispatch:
 
 jobs:
@@ -18,7 +19,7 @@ jobs:
 
       - run: pip install -r requirements.txt
 
-      - name: Run script
+      - name: Run QLD alert
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: python qqq_alert.py
